@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FundRise — Fund What Matters</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --coral: #FF5C3A;
+    --coral-light: #FF8066;
+    --deep: #0F1117;
+    --card: #181C27;
+    --card2: #1E2233;
+    --muted: #7B849A;
+    --light: #E8EBF4;
+    --white: #FFFFFF;
+    --gold: #FFBA08;
+    --green: #3DD68C;
+    --radius: 18px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--deep);
+    color: var(--light);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 6%;
+    background: rgba(15,17,23,0.82);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 1.55rem; font-weight: 900;
+    color: var(--white);
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--coral); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.9rem; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--coral); color: var(--white) !important;
+    padding: 10px 22px; border-radius: 50px;
+    font-weight: 600 !important;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+  .nav-cta:hover { background: var(--coral-light) !important; transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 140px 6% 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,92,58,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(61,214,140,0.09) 0%, transparent 60%);
+  }
+  .hero-noise {
+    position: absolute; inset: 0; z-index: 0; opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,186,8,0.12);
+    border: 1px solid rgba(255,186,8,0.3);
+    color: var(--gold); border-radius: 50px;
+    padding: 6px 16px; font-size: 0.8rem; font-weight: 600;
+    margin-bottom: 28px; position: relative; z-index: 1;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-badge::before { content: '✦'; font-size: 0.7rem; }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    font-weight: 900; line-height: 1.05;
+    color: var(--white);
+    position: relative; z-index: 1;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+  .hero h1 em { font-style: italic; color: var(--coral); }
+  .hero p {
+    max-width: 560px; margin: 24px auto 0;
+    font-size: 1.15rem; line-height: 1.7;
+    color: var(--muted);
+    position: relative; z-index: 1;
+    animation: fadeUp 0.7s 0.2s ease both;
+  }
+  .hero-actions {
+    display: flex; gap: 14px; margin-top: 40px;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.7s 0.3s ease both;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .btn-primary {
+    background: var(--coral); color: var(--white);
+    border: none; padding: 16px 34px;
+    border-radius: 50px; font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-primary:hover { background: var(--coral-light); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(255,92,58,0.35); }
+  .btn-ghost {
+    background: transparent; color: var(--white);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    padding: 16px 34px; border-radius: 50px;
+    font-size: 1rem; font-weight: 500; cursor: pointer;
+    transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.06); }
+
+  .hero-stats {
+    display: flex; gap: 48px; margin-top: 64px;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.7s 0.4s ease both;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 2.2rem; font-weight: 900; color: var(--white);
+  }
+  .stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--coral);
+    margin-bottom: 14px;
+  }
+  .section-label::before { content: ''; display: block; width: 20px; height: 2px; background: var(--coral); }
+
+  /* ── CATEGORIES ── */
+  .categories {
+    padding: 80px 6%;
+    background: linear-gradient(180deg, transparent, rgba(255,255,255,0.015) 50%, transparent);
+  }
+  .cat-header { text-align: center; margin-bottom: 48px; }
+  .cat-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 900;
+    color: var(--white);
+  }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 14px; max-width: 900px; margin: 0 auto;
+  }
+  .cat-pill {
+    background: var(--card); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px; padding: 18px 12px;
+    text-align: center; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .cat-pill:hover { border-color: var(--coral); background: rgba(255,92,58,0.08); transform: translateY(-2px); }
+  .cat-pill .icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .cat-pill .name { font-size: 0.82rem; font-weight: 600; color: var(--light); }
+
+  /* ── CAMPAIGNS ── */
+  .campaigns { padding: 80px 6%; }
+  .section-header {
+    display: flex; justify-content: space-between;
+    align-items: flex-end; margin-bottom: 40px;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .section-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 900; color: var(--white);
+  }
+  .see-all {
+    color: var(--coral); font-weight: 600; font-size: 0.9rem;
+    text-decoration: none; display: flex; align-items: center; gap: 6px;
+  }
+  .see-all:hover { gap: 10px; }
+
+  .campaign-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 24px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius); overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+    cursor: pointer;
+  }
+  .card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+  .card-img-bg {
+    width: 100%; height: 200px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem;
+    position: relative;
+  }
+  .card-tag {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+    color: var(--white); border-radius: 50px;
+    padding: 4px 12px; font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .urgent-tag {
+    position: absolute; top: 12px; right: 12px;
+    background: var(--coral); color: var(--white);
+    border-radius: 50px; padding: 4px 12px;
+    font-size: 0.72rem; font-weight: 700;
+  }
+  .card-body { padding: 20px; }
+  .card-org { font-size: 0.75rem; color: var(--muted); font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .card-org .verified { color: var(--coral); font-size: 0.8rem; }
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--white); line-height: 1.35; margin-bottom: 10px;
+  }
+  .card-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+  .progress-bar {
+    background: rgba(255,255,255,0.08); border-radius: 50px;
+    height: 6px; margin-bottom: 12px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 50px;
+    background: linear-gradient(90deg, var(--coral), var(--coral-light));
+    transition: width 1s ease;
+  }
+  .progress-fill.green { background: linear-gradient(90deg, var(--green), #5EF0A8); }
+  .card-meta {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .raised { font-size: 0.85rem; }
+  .raised strong { font-weight: 700; color: var(--white); font-size: 0.95rem; }
+  .raised span { color: var(--muted); font-size: 0.78rem; }
+  .days-left { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
+  .days-left strong { color: var(--gold); }
+  .card-footer {
+    padding: 14px 20px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .backers { font-size: 0.78rem; color: var(--muted); }
+  .backers strong { color: var(--white); }
+  .donate-btn {
+    background: var(--coral); color: var(--white);
+    border: none; padding: 8px 20px; border-radius: 50px;
+    font-size: 0.82rem; font-weight: 700; cursor: pointer;
+    transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .donate-btn:hover { background: var(--coral-light); }
+
+  /* ── FEATURED ── */
+  .featured { padding: 80px 6%; }
+  .featured-inner {
+    background: linear-gradient(135deg, var(--card2) 0%, #1a1f32 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 28px; overflow: hidden;
+    display: grid; grid-template-columns: 1fr 1fr;
+    min-height: 480px; position: relative;
+  }
+  @media(max-width:768px){ .featured-inner { grid-template-columns: 1fr; } }
+  .featured-visual {
+    background: linear-gradient(135deg, #1E2B3A, #0D1F2D);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8rem; position: relative; overflow: hidden;
+  }
+  .featured-visual::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,92,58,0.1), rgba(61,214,140,0.1));
+  }
+  .featured-content { padding: 56px; display: flex; flex-direction: column; justify-content: center; }
+  .featured-content h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.6rem, 3vw, 2.5rem); font-weight: 900;
+    color: var(--white); margin-bottom: 16px; line-height: 1.2;
+  }
+  .featured-content p { color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+  .featured-amounts { display: flex; gap: 32px; margin-bottom: 16px; }
+  .amount-item .num {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem; font-weight: 900; color: var(--white);
+  }
+  .amount-item .lbl { font-size: 0.78rem; color: var(--muted); }
+  .featured-bar {
+    background: rgba(255,255,255,0.08); border-radius: 50px;
+    height: 8px; overflow: hidden;
+  }
+  .featured-fill {
+    height: 100%; width: 74%;
+    background: linear-gradient(90deg, var(--coral), var(--coral-light));
+    border-radius: 50px;
+  }
+  .featured-actions { display: flex; gap: 12px; }
+
+  /* ── HOW IT WORKS ── */
+  .how { padding: 80px 6%; }
+  .how-header { text-align: center; margin-bottom: 60px; }
+  .how-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; color: var(--white);
+  }
+  .steps {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 32px; max-width: 960px; margin: 0 auto;
+  }
+  .step {
+    text-align: center; padding: 36px 24px;
+    background: var(--card); border-radius: var(--radius);
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .step-num {
+    width: 48px; height: 48px;
+    background: rgba(255,92,58,0.12);
+    border: 1.5px solid rgba(255,92,58,0.3);
+    color: var(--coral); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 900;
+    margin: 0 auto 20px;
+  }
+  .step h3 { font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 10px; }
+  .step p { font-size: 0.85rem; color: var(--muted); line-height: 1.65; }
+
+  /* ── TRUST ── */
+  .trust { padding: 80px 6%; }
+  .trust-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .trust-card {
+    background: var(--card); border: 1px solid rgba(255,255,255,0.05);
+    border-radius: var(--radius); padding: 28px;
+    display: flex; gap: 18px; align-items: flex-start;
+  }
+  .trust-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: rgba(255,92,58,0.12); color: var(--coral);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+  }
+  .trust-card h4 { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+  .trust-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── TESTIMONIALS ── */
+  .testi-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .testi {
+    background: var(--card); border: 1px solid rgba(255,255,255,0.05);
+    border-radius: var(--radius); padding: 28px;
+  }
+  .stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 14px; }
+  .testi-quote { font-size: 0.9rem; color: var(--light); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; font-weight: 700;
+    background: linear-gradient(135deg, var(--coral), #FF8C69);
+    color: white; flex-shrink: 0;
+  }
+  .author-name { font-size: 0.85rem; font-weight: 700; color: var(--white); }
+  .author-role { font-size: 0.75rem; color: var(--muted); }
+
+  /* ── START CTA ── */
+  .start-cta {
+    margin: 60px 6% 80px;
+    background: linear-gradient(135deg, #1E2233, #0F1117);
+    border: 1px solid rgba(255,92,58,0.2);
+    border-radius: 28px; padding: 72px 6%;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .start-cta::before {
+    content: '';
+    position: absolute; top: -40%; left: 50%;
+    transform: translateX(-50%);
+    width: 60%; height: 80%;
+    background: radial-gradient(ellipse, rgba(255,92,58,0.15), transparent 70%);
+    pointer-events: none;
+  }
+  .start-cta h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 4.5vw, 3.5rem); font-weight: 900;
+    color: var(--white); position: relative; z-index: 1; margin-bottom: 16px;
+  }
+  .start-cta p { color: var(--muted); margin-bottom: 36px; font-size: 1.05rem; position: relative; z-index: 1; }
+  .start-cta .actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #0A0C12;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 60px 6% 32px;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px; margin-bottom: 48px;
+  }
+  @media(max-width:768px){ .footer-grid { grid-template-columns: 1fr 1fr; } }
+  .footer-brand p { color: var(--muted); font-size: 0.85rem; line-height: 1.7; margin-top: 14px; }
+  .footer-col h5 {
+    font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--white); margin-bottom: 16px;
+  }
+  .footer-col a {
+    display: block; color: var(--muted); text-decoration: none;
+    font-size: 0.85rem; margin-bottom: 10px; transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--white); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 24px; display: flex;
+    justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .footer-bottom p { font-size: 0.8rem; color: var(--muted); }
+  .social-links { display: flex; gap: 12px; }
+  .social-links a {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--card); border: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; text-decoration: none; transition: all 0.2s;
+  }
+  .social-links a:hover { background: var(--coral); border-color: var(--coral); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px; padding: 40px; max-width: 480px; width: 100%;
+    position: relative; animation: fadeUp 0.3s ease;
+  }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(255,255,255,0.08); border: none;
+    width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+    color: var(--white); font-size: 1rem;
+  }
+  .modal h3 {
+    font-family: 'Fraunces', serif; font-size: 1.6rem;
+    font-weight: 900; color: var(--white); margin-bottom: 6px;
+  }
+  .modal p { color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; }
+  .amounts-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+  .amount-btn {
+    background: var(--card2); border: 1.5px solid rgba(255,255,255,0.08);
+    color: var(--white); padding: 12px 4px; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700;
+    cursor: pointer; transition: all 0.15s; text-align: center;
+  }
+  .amount-btn:hover, .amount-btn.active { background: rgba(255,92,58,0.15); border-color: var(--coral); color: var(--coral); }
+  .input-group { margin-bottom: 16px; }
+  .input-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .input-group input {
+    width: 100%; background: var(--card2); border: 1.5px solid rgba(255,255,255,0.08);
+    color: var(--white); padding: 12px 16px; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    outline: none; transition: border-color 0.2s;
+  }
+  .input-group input:focus { border-color: var(--coral); }
+  .input-group input::placeholder { color: var(--muted); }
+  .modal .btn-primary { width: 100%; padding: 14px; font-size: 1rem; border-radius: 12px; }
+  .modal-footer { text-align: center; margin-top: 14px; font-size: 0.78rem; color: var(--muted); }
+
+  /* ── SEARCH BAR ── */
+  .search-bar { max-width: 560px; margin: 0 auto 60px; position: relative; }
+  .search-bar input {
+    width: 100%; background: var(--card); border: 1px solid rgba(255,255,255,0.1);
+    color: var(--white); padding: 16px 52px 16px 20px;
+    border-radius: 50px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+  }
+  .search-bar input:focus { border-color: var(--coral); }
+  .search-bar input::placeholder { color: var(--muted); }
+  .search-bar button {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    background: var(--coral); border: none; color: white;
+    width: 42px; height: 42px; border-radius: 50%; cursor: pointer; font-size: 1rem;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── TICKER ── */
+  .ticker { background: var(--coral); padding: 10px 0; overflow: hidden; white-space: nowrap; }
+  .ticker-inner { display: inline-flex; gap: 60px; animation: ticker 25s linear infinite; }
+  .ticker-item { font-size: 0.82rem; font-weight: 700; color: white; }
+  .ticker-item::before { content: '✦ '; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Fund<span>Rise</span></div>
+  <div class="nav-links">
+    <a href="#campaigns">Explore</a>
+    <a href="#how">How It Works</a>
+    <a href="#">Blog</a>
+    <a href="#">Sign In</a>
+    <a href="#" class="nav-cta" onclick="openModal()">Start a Campaign</a>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker" style="margin-top:72px">
+  <div class="ticker-inner">
+    <span class="ticker-item">$2.1M raised for flood relief</span>
+    <span class="ticker-item">Priya's Medical Fund — 94% funded</span>
+    <span class="ticker-item">School Rebuild Project — Goal Reached!</span>
+    <span class="ticker-item">Save the Mangroves — 3 days left</span>
+    <span class="ticker-item">Community Kitchen — 1,204 backers</span>
+    <span class="ticker-item">$2.1M raised for flood relief</span>
+    <span class="ticker-item">Priya's Medical Fund — 94% funded</span>
+    <span class="ticker-item">School Rebuild Project — Goal Reached!</span>
+    <span class="ticker-item">Save the Mangroves — 3 days left</span>
+    <span class="ticker-item">Community Kitchen — 1,204 backers</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-noise"></div>
+  <div class="hero-badge">Trusted by 2M+ donors worldwide</div>
+  <h1>Fund the causes<br>that <em>move</em> you</h1>
+  <p>From medical emergencies to community projects — every rupee, every dollar, every moment of generosity ripples outward.</p>
+  <div class="hero-actions">
+    <button class="btn-primary" onclick="openModal()">Donate Now</button>
+    <button class="btn-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">How it works →</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">₹842Cr+</div><div class="stat-label">Total Raised</div></div>
+    <div class="stat"><div class="stat-num">1.4L+</div><div class="stat-label">Campaigns</div></div>
+    <div class="stat"><div class="stat-num">2M+</div><div class="stat-label">Donors</div></div>
+    <div class="stat"><div class="stat-num">96%</div><div class="stat-label">Success Rate</div></div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories">
+  <div class="cat-header">
+    <div class="section-label">Browse</div>
+    <h2>Find your cause</h2>
+  </div>
+  <div class="search-bar">
+    <input type="text" placeholder="Search campaigns, causes, people…">
+    <button>🔍</button>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-pill"><div class="icon">🏥</div><div class="name">Medical</div></div>
+    <div class="cat-pill"><div class="icon">🎓</div><div class="name">Education</div></div>
+    <div class="cat-pill"><div class="icon">🌊</div><div class="name">Disaster</div></div>
+    <div class="cat-pill"><div class="icon">🌱</div><div class="name">Environment</div></div>
+    <div class="cat-pill"><div class="icon">🐾</div><div class="name">Animals</div></div>
+    <div class="cat-pill"><div class="icon">🏘️</div><div class="name">Community</div></div>
+    <div class="cat-pill"><div class="icon">👶</div><div class="name">Children</div></div>
+    <div class="cat-pill"><div class="icon">👵</div><div class="name">Elderly</div></div>
+    <div class="cat-pill"><div class="icon">💙</div><div class="name">Veterans</div></div>
+    <div class="cat-pill"><div class="icon">🎨</div><div class="name">Arts</div></div>
+    <div class="cat-pill"><div class="icon">⚽</div><div class="name">Sports</div></div>
+    <div class="cat-pill"><div class="icon">🕌</div><div class="name">Religious</div></div>
+  </div>
+</section>
+
+<!-- CAMPAIGNS -->
+<section class="campaigns" id="campaigns">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Featured</div>
+      <h2>Trending Campaigns</h2>
+    </div>
+    <a href="#" class="see-all">View all campaigns →</a>
+  </div>
+  <div class="campaign-grid">
+
+    <div class="card" onclick="openModal()">
+      <div class="card-img-bg" style="background:linear-gradient(135deg,#1A2940,#0E1B2E)">
+        🏥
+        <div class="card-tag">Medical</div>
+        <div class="urgent-tag">🔴 URGENT</div>
+      </div>
+      <div class="card-body">
+        <div class="card-org"><span>Ravi Kumar Foundation</span><span class="verified">✔</span></div>
+        <div class="card-title">Help 8-Year-Old Aarav Beat Leukemia</div>
+        <div class="card-desc">Aarav needs a bone marrow transplant. His family has exhausted savings. Every donation takes him closer to a second chance at life.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div>
+        <div class="card-meta">
+          <div class="raised"><strong>₹39.2L</strong> <span>raised of ₹50L goal</span></div>
+          <div class="days-left"><strong>12</strong> days left</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="backers"><strong>2,841</strong> backers</div>
+        <button class="donate-btn">Donate ♥</button>
+      </div>
+    </div>
+
+    <div class="card" onclick="openModal()">
+      <div class="card-img-bg" style="background:linear-gradient(135deg,#1A2B1A,#0E220E)">
+        🌊
+        <div class="card-tag">Disaster</div>
+      </div>
+      <div class="card-body">
+        <div class="card-org"><span>Kerala Flood Aid Network</span><span class="verified">✔</span></div>
+        <div class="card-title">Rebuild 300 Homes Destroyed by Floods</div>
+        <div class="card-desc">Monsoon floods washed away entire villages. Help us rebuild safe homes for 1,200 displaced residents before winter.</div>
+        <div class="progress-bar"><div class="progress-fill green" style="width:100%"></div></div>
+        <div class="card-meta">
+          <div class="raised"><strong>₹1.2Cr</strong> <span>raised of ₹1Cr goal ✅</span></div>
+          <div class="days-left"><strong>Goal</strong> reached!</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="backers"><strong>11,402</strong> backers</div>
+        <button class="donate-btn">Donate ♥</button>
+      </div>
+    </div>
+
+    <div class="card" onclick="openModal()">
+      <div class="card-img-bg" style="background:linear-gradient(135deg,#1F1A2E,#120E20)">
+        🎓
+        <div class="card-tag">Education</div>
+      </div>
+      <div class="card-body">
+        <div class="card-org"><span>Shiksha Foundation</span><span class="verified">✔</span></div>
+        <div class="card-title">Build a Digital Classroom for 400 Rural Girls</div>
+        <div class="card-desc">These bright girls walk 8km to school with no computers. Help us bring the world to them with a tech-enabled learning centre.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div>
+        <div class="card-meta">
+          <div class="raised"><strong>₹11L</strong> <span>raised of ₹20L goal</span></div>
+          <div class="days-left"><strong>28</strong> days left</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="backers"><strong>987</strong> backers</div>
+        <button class="donate-btn">Donate ♥</button>
+      </div>
+    </div>
+
+    <div class="card" onclick="openModal()">
+      <div class="card-img-bg" style="background:linear-gradient(135deg,#2B1A1A,#200E0E)">
+        🐾
+        <div class="card-tag">Animals</div>
+      </div>
+      <div class="card-body">
+        <div class="card-org"><span>Paws & Claws Rescue</span><span class="verified">✔</span></div>
+        <div class="card-title">Rescue & Rehabilitate 500 Street Animals</div>
+        <div class="card-desc">Our shelter is at capacity. Help us expand to save 500 more stray animals from disease, abuse, and starvation this year.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:42%"></div></div>
+        <div class="card-meta">
+          <div class="raised"><strong>₹6.3L</strong> <span>raised of ₹15L goal</span></div>
+          <div class="days-left"><strong>45</strong> days left</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="backers"><strong>734</strong> backers</div>
+        <button class="donate-btn">Donate ♥</button>
+      </div>
+    </div>
+
+    <div class="card" onclick="openModal()">
+      <div class="card-img-bg" style="background:linear-gradient(135deg,#1A2020,#0E1818)">
+        🌱
+        <div class="card-tag">Environment</div>
+      </div>
+      <div class="card-body">
+        <div class="card-org"><span>GreenEarth India</span><span class="verified">✔</span></div>
+        <div class="card-title">Plant 1 Million Trees Across Tamil Nadu</div>
+        <div class="card-desc">Climate change is accelerating. We're restoring degraded forests one sapling at a time. Your ₹50 plants one tree that lasts 100 years.</div>
+        <div class="progress-bar"><div class="progress-fill green" style="width:89%"></div></div>
+        <div class="card-meta">
+          <div class="raised"><strong>₹44.5L</strong> <span>raised of ₹50L goal</span></div>
+          <div class="days-left"><strong>7</strong> days left</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="backers"><strong>18,221</strong> backers</div>
+        <button class="donate-btn">Donate ♥</button>
+      </div>
+    </div>
+
+    <div class="card" onclick="openModal()">
+      <div class="card-img-bg" style="background:linear-gradient(135deg,#2B2A1A,#201F0E)">
+        🏘️
+        <div class="card-tag">Community</div>
+        <div class="urgent-tag">⭐ NEW</div>
+      </div>
+      <div class="card-body">
+        <div class="card-org"><span>Hyderabad Neighbours</span><span class="verified">✔</span></div>
+        <div class="card-title">Open a Free Mental Health Centre in Banjara Hills</div>
+        <div class="card-desc">1 in 4 urban Indians suffers silently. We're opening a community mental health centre offering free counselling and crisis support.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:21%"></div></div>
+        <div class="card-meta">
+          <div class="raised"><strong>₹2.1L</strong> <span>raised of ₹10L goal</span></div>
+          <div class="days-left"><strong>60</strong> days left</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="backers"><strong>312</strong> backers</div>
+        <button class="donate-btn">Donate ♥</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FEATURED CAMPAIGN -->
+<section class="featured reveal">
+  <div class="section-label" style="padding:0 6%;margin-bottom:24px">Editor's Pick</div>
+  <div class="featured-inner" style="margin:0 6%">
+    <div class="featured-visual">🫀</div>
+    <div class="featured-content">
+      <div class="section-label">Campaign of the Month</div>
+      <h2>Give the Gift of a Heartbeat to Sunita</h2>
+      <p>Sunita, 34, a school teacher from Nagpur, was diagnosed with end-stage heart failure. She needs a transplant within 6 months or won't survive. Her husband works as a daily-wage labourer. Their two daughters are watching their mother fade.</p>
+      <div class="featured-progress">
+        <div class="featured-amounts">
+          <div class="amount-item"><div class="num">₹73.2L</div><div class="lbl">Raised</div></div>
+          <div class="amount-item"><div class="num">₹1Cr</div><div class="lbl">Goal</div></div>
+          <div class="amount-item"><div class="num">4,812</div><div class="lbl">Donors</div></div>
+        </div>
+        <div class="featured-bar"><div class="featured-fill"></div></div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-top:8px">74% funded · 19 days remaining</p>
+      </div>
+      <div class="featured-actions">
+        <button class="btn-primary" onclick="openModal()">Donate Now</button>
+        <button class="btn-ghost">Share Campaign</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how reveal" id="how">
+  <div class="how-header">
+    <div class="section-label" style="justify-content:center">Simple Process</div>
+    <h2>How FundRise Works</h2>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Browse & Discover</h3>
+      <p>Explore thousands of verified campaigns across medical, education, disaster, environment, and community causes.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Choose Your Cause</h3>
+      <p>Every campaign is KYC-verified and reviewed by our trust & safety team before going live. Donate with confidence.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Donate Securely</h3>
+      <p>Pay via UPI, card, net banking, or wallet. 100% secure payments. Instant receipts. 80G tax exemption available.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>Track Impact</h3>
+      <p>Get real-time updates from campaign owners. See exactly how your donation is making a difference on the ground.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="trust reveal">
+  <div style="text-align:center;margin-bottom:40px;padding:0 6%">
+    <div class="section-label" style="justify-content:center">Why FundRise</div>
+    <h2 style="font-family:'Fraunces',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;color:var(--white)">Built on trust, powered by transparency</h2>
+  </div>
+  <div class="trust-grid" style="padding:0 6%">
+    <div class="trust-card">
+      <div class="trust-icon">🛡️</div>
+      <div><h4>KYC Verified Campaigns</h4><p>Every fundraiser is identity-verified before publishing. We validate documentation, medical records, and beneficiary details.</p></div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">🔒</div>
+      <div><h4>Bank-Grade Security</h4><p>256-bit SSL encryption, PCI-DSS compliant payments, and two-factor authentication protect every transaction.</p></div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">📊</div>
+      <div><h4>Real-Time Tracking</h4><p>Watch donations roll in live. Campaign owners post photo and video updates so you always know your impact.</p></div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">🧾</div>
+      <div><h4>Tax Benefits (80G)</h4><p>Donations to eligible NGO campaigns qualify for 80G deductions. Instant tax receipts sent to your email.</p></div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">💸</div>
+      <div><h4>0% Platform Fee</h4><p>100% of your donation reaches the beneficiary. FundRise operates on optional tips from donors — never from your donation.</p></div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">📞</div>
+      <div><h4>24/7 Support</h4><p>Our dedicated donor care team is available via chat, email, and phone to resolve any issue within 4 hours.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials reveal" style="padding:80px 6%">
+  <div style="text-align:center;margin-bottom:40px">
+    <div class="section-label" style="justify-content:center">Stories</div>
+    <h2 style="font-family:'Fraunces',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;color:var(--white)">Real people, real impact</h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi">
+      <div class="stars">★★★★★</div>
+      <div class="testi-quote">"My daughter needed urgent heart surgery. We raised ₹28L in 11 days. I still can't believe it. FundRise gave us a miracle."</div>
+      <div class="testi-author"><div class="avatar">R</div><div><div class="author-name">Ramesh Iyer</div><div class="author-role">Campaign beneficiary · Chennai</div></div></div>
+    </div>
+    <div class="testi">
+      <div class="stars">★★★★★</div>
+      <div class="testi-quote">"I've donated to 14 campaigns here. The updates are regular, the transparency is incredible. This is the only platform I trust."</div>
+      <div class="testi-author"><div class="avatar">A</div><div><div class="author-name">Ananya Mehta</div><div class="author-role">Regular donor · Mumbai</div></div></div>
+    </div>
+    <div class="testi">
+      <div class="stars">★★★★★</div>
+      <div class="testi-quote">"We raised funds for 200 flood victims in 3 days. The zero platform fee means every rupee goes where it's needed most."</div>
+      <div class="testi-author"><div class="avatar">S</div><div><div class="author-name">Sundar Krishnan</div><div class="author-role">NGO coordinator · Kochi</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- START CTA -->
+<div class="start-cta reveal">
+  <h2>Have a cause that matters?<br>Start your campaign today.</h2>
+  <p>Set it up in 10 minutes. Reach millions of donors. Zero fees, full support.</p>
+  <div class="actions">
+    <button class="btn-primary" onclick="openModal()">Start a Campaign</button>
+    <button class="btn-ghost">Learn More</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">Fund<span>Rise</span></div>
+      <p>India's most trusted crowdfunding platform. Connecting generous hearts with meaningful causes since 2019.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Explore</h5>
+      <a href="#">All Campaigns</a>
+      <a href="#">Medical</a>
+      <a href="#">Education</a>
+      <a href="#">Disaster Relief</a>
+      <a href="#">Environment</a>
+    </div>
+    <div class="footer-col">
+      <h5>Fundraise</h5>
+      <a href="#">Start a Campaign</a>
+      <a href="#">How It Works</a>
+      <a href="#">For NGOs</a>
+      <a href="#">Success Stories</a>
+      <a href="#">Pricing</a>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <a href="#">About Us</a>
+      <a href="#">Press</a>
+      <a href="#">Careers</a>
+      <a href="#">Blog</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 FundRise. All rights reserved. · <a href="#" style="color:var(--muted)">Privacy Policy</a> · <a href="#" style="color:var(--muted)">Terms</a></p>
+    <div class="social-links">
+      <a href="#">𝕏</a>
+      <a href="#">f</a>
+      <a href="#">in</a>
+      <a href="#">📷</a>
+    </div>
+  </div>
+</footer>
+
+<!-- DONATE MODAL -->
+<div class="modal-overlay" id="donateModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3>Make a Donation ♥</h3>
+    <p>Choose an amount or enter a custom value. 100% goes to the cause.</p>
+    <div class="amounts-grid">
+      <div class="amount-btn" onclick="selectAmount(this, 100)">₹100</div>
+      <div class="amount-btn active" onclick="selectAmount(this, 500)">₹500</div>
+      <div class="amount-btn" onclick="selectAmount(this, 1000)">₹1K</div>
+      <div class="amount-btn" onclick="selectAmount(this, 5000)">₹5K</div>
+    </div>
+    <div class="input-group">
+      <label>Custom Amount (₹)</label>
+      <input type="number" id="customAmount" placeholder="Enter any amount" oninput="clearAmounts()">
+    </div>
+    <div class="input-group">
+      <label>Your Name</label>
+      <input type="text" placeholder="Ravi Kumar">
+    </div>
+    <div class="input-group">
+      <label>Email for Receipt</label>
+      <input type="email" placeholder="ravi@email.com">
+    </div>
+    <button class="btn-primary" onclick="handleDonate()">Donate Securely 🔒</button>
+    <div class="modal-footer">🛡️ 256-bit SSL · Instant 80G Receipt · UPI / Cards / NetBanking</div>
+  </div>
+</div>
+
+<script>
+  function openModal() {
+    document.getElementById('donateModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('donateModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('donateModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  let selectedAmount = 500;
+  function selectAmount(el, val) {
+    document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    selectedAmount = val;
+    document.getElementById('customAmount').value = '';
+  }
+  function clearAmounts() {
+    document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+    selectedAmount = null;
+  }
+
+  function handleDonate() {
+    const amt = document.getElementById('customAmount').value || selectedAmount;
+    if (!amt) { alert('Please select or enter an amount.'); return; }
+    closeModal();
+    const toast = document.createElement('div');
+    toast.style.cssText = `position:fixed;bottom:32px;right:32px;z-index:300;background:#3DD68C;color:#000;padding:16px 24px;border-radius:14px;font-weight:700;font-family:'DM Sans',sans-serif;box-shadow:0 8px 32px rgba(0,0,0,0.4);animation:fadeUp 0.3s ease;`;
+    toast.textContent = `✅ Thank you! ₹${Number(amt).toLocaleString('en-IN')} donation initiated!`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  const barObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const fill = e.target.querySelector('.progress-fill');
+        if (fill) { const w = fill.style.width; fill.style.width = '0'; setTimeout(()=>fill.style.width=w, 100); }
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.card').forEach(c => barObserver.observe(c));
+</script>
+</body>
+</html>
